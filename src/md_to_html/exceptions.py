@@ -13,6 +13,10 @@ class FrontMatterError(MarkdownToHtmlError):
     """Raised when YAML front matter is malformed or has an invalid shape."""
 
 
+class MathConversionError(MarkdownToHtmlError):
+    """Raised when a LaTeX expression cannot be converted to MathML."""
+
+
 class InputFileError(MarkdownToHtmlError):
     """Raised when an input file cannot be read or is unsupported."""
 

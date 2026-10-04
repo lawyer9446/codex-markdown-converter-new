@@ -31,6 +31,7 @@ class ConversionOptions:
     css_href: str | None = None
     embedded_css: str | None = None
     no_style: bool = False
+    math: bool = False
 
 
 @dataclass(frozen=True, slots=True)

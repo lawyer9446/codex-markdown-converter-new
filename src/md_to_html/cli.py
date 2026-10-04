@@ -35,6 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--fragment", action="store_true", help="HTML 문서 대신 본문 조각 출력")
     parser.add_argument("--title", help="문서 제목 강제 지정")
     parser.add_argument("--lang", help="HTML lang 속성 지정")
+    parser.add_argument("--math", action="store_true", help="달러 구분자 수식을 MathML로 변환")
     parser.add_argument("--toc", action="store_true", help="h2~h4 목차 생성")
     parser.add_argument(
         "--sanitize",
@@ -86,6 +87,7 @@ def _options_from_args(args: argparse.Namespace) -> ConversionOptions:
         standalone=not args.fragment,
         sanitize=True,
         toc=args.toc,
+        math=args.math,
         lang=args.lang,
         title=args.title,
         allow_raw_html=args.allow_raw_html,

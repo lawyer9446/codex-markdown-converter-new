@@ -6,6 +6,7 @@ from .exceptions import (
     FrontMatterError,
     InputFileError,
     MarkdownToHtmlError,
+    MathConversionError,
     OutputFileError,
 )
 from .models import ConversionOptions, ConversionResult
@@ -17,6 +18,7 @@ __all__ = [
     "FrontMatterError",
     "InputFileError",
     "MarkdownToHtmlError",
+    "MathConversionError",
     "OutputFileError",
     "convert_file",
     "markdown_to_html",

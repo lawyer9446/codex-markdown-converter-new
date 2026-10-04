@@ -82,6 +82,7 @@ md2html INPUT
   --title TEXT                 문서 제목 강제 지정
   --lang CODE                  <html lang> 값 강제 지정
   --toc                        h2~h4 목차 생성
+  --math                       $...$ / $$...$$ 수식을 MathML로 변환
   --sanitize                   HTML 정화(호환성을 위한 명시 옵션, 항상 활성화)
   --allow-raw-html              원시 HTML 파싱 허용, 최종 정화는 유지
   --css PATH_OR_URL            외부 스타일시트 연결
@@ -179,6 +180,45 @@ lang: ko
 처리됩니다. 목차의 링크와 실제 제목 ID는 같은 변환 과정에서 함께 생성됩니다. 중복 ID에는
 `-2`, `-3` 접미사가 붙습니다.
 
+## 수식
+
+`--math`를 지정하면 LaTeX 형식의 인라인 수식 `$...$`과 블록 수식 `$$...$$`을
+MathML로 변환합니다. 최신 Chrome, Edge, Firefox, Safari에서 외부 JavaScript나
+CDN 없이 표시할 수 있습니다. 변환 후 HTML을 열 때 인터넷 연결이 필요하지 않습니다.
+
+```markdown
+에너지 관계식은 $E=mc^2$입니다.
+
+$$
+\frac{-b \pm \sqrt{b^2-4ac}}{2a}
+$$
+```
+
+```bash
+md2html examples/math.md --math -o build/math.html
+```
+
+Python API에서는 `ConversionOptions(math=True)`를 사용합니다.
+
+```python
+result = markdown_to_html(
+    r"에너지 $E=mc^2$",
+    options=ConversionOptions(math=True),
+)
+```
+
+기본값은 수식 해석 비활성화입니다. 코드 블록과 인라인 코드 안의 달러 기호는
+수식으로 처리하지 않으며, 일반 달러 기호는 `\$`로 이스케이프할 수 있습니다.
+인라인 수식은 구분자 바로 안쪽에 공백을 넣지 않습니다. 가격과의 혼동을 줄이기 위해
+여는 `$` 앞이나 닫는 `$` 뒤에 숫자가 바로 붙으면 인라인 수식으로 해석하지 않습니다.
+블록 수식은 별도 문단에 작성하세요. fragment 모드에서도 MathML이 유지됩니다.
+
+지원하는 LaTeX 문법은 `latex2mathml`의 변환 범위에 따릅니다. 전체 LaTeX 문서,
+패키지 로딩, 사용자 매크로 및 수식 번호 자동 생성은 지원하지 않습니다.
+변환기가 잘못된 수식으로 판단하면 API는 `MathConversionError`, CLI는 종료 코드
+`1`을 반환합니다. 생성된 MathML에도 HTML 정화를 적용하므로 URL·인라인 스타일·
+이벤트 핸들러를 이용하는 명령은 보존하지 않습니다.
+
 ## 링크와 이미지
 
 다른 Markdown 문서를 가리키는 상대 링크만 `.html`로 바뀝니다.
@@ -269,7 +309,7 @@ src/md_to_html/
 
 ## 알려진 제한사항
 
-- 수식 및 Mermaid 렌더링은 포함하지 않습니다.
+- Mermaid 렌더링은 포함하지 않습니다. 수식은 `--math`로 활성화하며 MathML 지원 브라우저가 필요합니다.
 - 링크 검사는 로컬 대상의 존재 여부만 확인하며 HTTP 상태를 요청하지 않습니다.
 - 한글 제목 ID는 읽기 쉬움을 위해 유니코드를 유지하므로, ASCII 전용 slug가 필요한 시스템은
   별도의 후처리가 필요합니다.
