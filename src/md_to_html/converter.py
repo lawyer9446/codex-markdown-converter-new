@@ -13,6 +13,7 @@ from typing import Any
 
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
+from mdit_py_plugins.dollarmath import dollarmath_plugin
 from mdit_py_plugins.footnote import footnote_plugin
 from mdit_py_plugins.tasklists import tasklists_plugin
 from pygments import highlight
@@ -23,6 +24,7 @@ from pygments.util import ClassNotFound
 from .exceptions import ConfigurationError, InputFileError, OutputFileError
 from .frontmatter import extract_front_matter
 from .links import is_dangerous_url, process_inline_tokens
+from .math import render_math
 from .models import ConversionOptions, ConversionResult
 from .security import sanitize_html
 from .styles import DEFAULT_CSS
@@ -70,6 +72,14 @@ def _build_markdown(options: ConversionOptions) -> MarkdownIt:
     parser.enable(["table", "strikethrough", "linkify"])
     parser.use(tasklists_plugin)
     parser.use(footnote_plugin)
+    if options.math:
+        parser.use(
+            dollarmath_plugin,
+            allow_labels=False,
+            allow_space=False,
+            allow_digits=False,
+            renderer=render_math,
+        )
     return parser
 
 
@@ -83,7 +93,7 @@ def _slugify(text: str) -> str:
 def _inline_plain_text(token: Token) -> str:
     """Extract visible heading text without Markdown delimiter syntax."""
 
-    if token.type in {"text", "code_inline"}:
+    if token.type in {"text", "code_inline", "math_inline"}:
         return token.content
     if token.type == "image":
         return token.content

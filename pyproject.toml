@@ -12,6 +12,7 @@ license = { text = "MIT" }
 authors = [{ name = "Markdown HTML Transformer contributors" }]
 dependencies = [
   "bleach>=6.1,<7",
+  "latex2mathml>=3.77,<4",
   "linkify-it-py>=2.0,<3",
   "markdown-it-py>=3.0,<5",
   "mdit-py-plugins>=0.4,<1",
